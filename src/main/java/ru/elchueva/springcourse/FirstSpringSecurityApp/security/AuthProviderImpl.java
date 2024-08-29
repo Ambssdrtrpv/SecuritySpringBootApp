@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.elchueva.springcourse.FirstSpringSecurityApp.services.PersonDetailsService;
 
@@ -16,11 +17,13 @@ import java.util.Collections;
 public class AuthProviderImpl implements AuthenticationProvider {
 
     private final PersonDetailsService personDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public AuthProviderImpl(PersonDetailsService personDetailsService) {
+    public AuthProviderImpl(PersonDetailsService personDetailsService, PasswordEncoder passwordEncoder) {
         this.personDetailsService = personDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -30,13 +33,14 @@ public class AuthProviderImpl implements AuthenticationProvider {
 
         String password = authentication.getCredentials().toString();
 
-        password.equals(personDetails.getPassword());
+        password.equals(passwordEncoder.encode(personDetails.getPassword()));
 
-        if (!password.equals(personDetails.getPassword()))
+        if (!password.equals(passwordEncoder.encode(personDetails.getPassword())))
             throw new BadCredentialsException("Wrong password");
 
         return new UsernamePasswordAuthenticationToken(personDetails, password,
                 Collections.emptyList());
+
     }
 
     @Override
