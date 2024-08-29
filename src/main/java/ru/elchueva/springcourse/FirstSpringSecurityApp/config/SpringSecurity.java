@@ -1,5 +1,25 @@
 package ru.elchueva.springcourse.FirstSpringSecurityApp.config;
+
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.web.SecurityFilterChain;//
+//public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//    http.csrf().disable()
+//            .authorizeRequests(authorize -> authorize
+//                    .requestMatchers("/auth/login").permitAll() // Разрешить доступ ко всем к логину
+//                    .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+//            )
+//            .formLogin((form) -> form
+//                    .loginPage("/auth/login")
+//                    .loginProcessingUrl("/process_login")
+//                    .defaultSuccessUrl("/hello", true)
+//                    .failureUrl("/auth/login?error=true")
+//                    .permitAll()
+//            )
+//            .logout((logout) -> logout.permitAll());
 //
+//    return http.build();
+//}
+
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AuthenticationProvider;
 //import org.springframework.security.config.annotation.SecurityBuilder;
@@ -211,11 +231,11 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/", "/home", "/auth/registration").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/login")
+                        .loginPage("/auth/login")
                         .defaultSuccessUrl("/hello", true)
                         .permitAll()
                 )
