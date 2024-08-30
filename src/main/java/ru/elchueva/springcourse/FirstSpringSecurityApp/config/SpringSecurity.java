@@ -208,7 +208,7 @@ package ru.elchueva.springcourse.FirstSpringSecurityApp.config;
 //
 //        return new InMemoryUserDetailsManager(user) ;
 //
-//    }
+//    anyRequest().hasAnyRole("ADMIN", "USER")}
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,7 +245,8 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/auth/registration").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/auth/login", "/error", "/auth/registration").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
