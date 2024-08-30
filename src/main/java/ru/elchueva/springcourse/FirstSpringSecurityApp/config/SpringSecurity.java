@@ -205,6 +205,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -218,19 +220,20 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.elchueva.springcourse.FirstSpringSecurityApp.security.AuthProviderImpl;
+import ru.elchueva.springcourse.FirstSpringSecurityApp.services.PersonDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurity {
 
 
-//    private final AuthProviderImpl authProvider;
-//
-//    @Autowired
-//    public SpringSecurity(AuthProviderImpl authProvider) {
-//        this.authProvider = authProvider;
-//    }
+    private final PersonDetailsService personDetailsService;
+
+    @Autowired
+    public SpringSecurity(PersonDetailsService personDetailsService) {
+        this.personDetailsService = personDetailsService;
+    }
+
 
 //    @Bean
 //    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
@@ -267,10 +270,13 @@ public class SpringSecurity {
 
         return http.build();
     }
-//    @Bean
-//    public AuthenticationManager authManager(AuthenticationConfiguration authConfig) throws Exception {
-//        // Получаем AuthenticationManagerBuilder из AuthenticationConfiguration
-//        return authConfig.getAuthenticationManager();
-//    }
+    @Bean
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(personDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return authProvider;
+    }
+
 }
 
